@@ -36,28 +36,29 @@
     }
     return 0;
 }
-    - (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-        // Save the image as "cached.png" in a folder accessible by the app (user_data_dir in python/kivy)
-        UIImage *image = info[UIImagePickerControllerOriginalImage];
-        NSData *imageData = UIImagePNGRepresentation(image);
 
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
+- (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    // Save the image as "cached.png" in a folder accessible by the app (user_data_dir in python/kivy)
+    UIImage *image = info[UIImagePickerControllerOriginalImage];
+    NSData *imageData = UIImagePNGRepresentation(image);
 
-        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png",@"cached"]];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
 
-        NSLog(@"pre writing to file");
-        if (![imageData writeToFile:imagePath atomically:NO])
-        {
-            NSLog(@"Failed to cache image data to disk");
-        }
-        else
-        {
-            NSLog(@"the cachedImagedPath is %@",imagePath);
-        }
-        [picker dismissViewControllerAnimated:YES completion:nil];//{
-        // <#code#>
-        //}];
+    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png",@"cached"]];
+
+    NSLog(@"pre writing to file");
+    if (![imageData writeToFile:imagePath atomically:NO])
+    {
+        NSLog(@"Failed to cache image data to disk");
     }
+    else
+    {
+        NSLog(@"the cachedImagedPath is %@",imagePath);
+    }
+    [picker dismissViewControllerAnimated:YES completion:nil];//{
+    // <#code#>
+    //}];
+}
 
 @end
