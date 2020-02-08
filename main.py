@@ -38,9 +38,18 @@ class MainApp(App):
 
         # picker_object.sourceType = picker_object.SourceType.photoLibrary
         picker_object.delegate = self
+        print("Picker delegate set")
 
-        load_framework('/System/Library/Frameworks/Photos.framework')
-        print("loaded Photolib framework..")
+        UIApplication = autoclass('UIApplication')
+        vc = UIApplication.sharedApplication().keyWindow.rootViewController()
+
+        print(f"vc = {vc}")
+        print(f"vc has {dir(vc)}")
+
+        vc.presentViewController_animated_completion_(picker, True, None)
+
+        # load_framework('/System/Library/Frameworks/Photos.framework')
+        #print("loaded Photolib framework..")
 
     @protocol('UIImagePickerControllerDelegate')
     def imagePickerController_didFinishPickingMediaWithInfo_(self, *args):
