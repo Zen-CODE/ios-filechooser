@@ -3,7 +3,7 @@ sys.path.append("/".join(x for x in __file__.split("/")[:-1]))
 from kivy.app import App
 from kivy.utils import platform
 if platform == 'ios':
-    from pyobjus import autoclass, protocol
+    from pyobjus import autoclass, protocol, ObjcVoid, objc_i
 from kivy.uix.image import Image
 from kivy.properties import ObjectProperty, StringProperty
 from pyobjus.dylib_manager import load_framework
@@ -30,11 +30,19 @@ class MainApp(App):
     def pick_image(self):
         # if platform == 'ios':
         #     self.native_image_picker.displayImagePicker()
-        picker = autoclass("UIImagePickerController")
+        picker = autoclass(
+            "UIImagePickerController",
+            load_class_methods=[b'alloc'],
+            load_instance_methods=[b'init', b'setSourceType_'])
         print("Created UIImagePickerController..")
 
         picker_object = picker.alloc().init()
         print(f"picker_object = {picker_object}")
+
+        # picker_object.sourceType = objc_i(0) - give  TypeError: an integer
+        # is required (got type __NSCFNumber)
+        picker_object.sourceType = 0 
+        print("picker_object.sourceType = objc_i(0)")
 
         # picker_object.sourceType = picker_object.SourceType.photoLibrary
         picker_object.delegate = self
@@ -43,10 +51,14 @@ class MainApp(App):
         UIApplication = autoclass('UIApplication')
         vc = UIApplication.sharedApplication().keyWindow.rootViewController()
 
-        print(f"vc = {vc}")
-        print(f"vc has {dir(vc)}")
+        print(f"vc alloced and inited = {vc}")
+        # print(f"vc has {dir(vc)}")
 
-        vc.presentViewController_animated_completion_(picker, True, None)
+        # vc.presentViewController_animated_completion_(picker, objc_b(True), objc_b(True))
+        # vc.presentViewController_animated_completion_(picker, True, ObjcVoid(None))
+        vc.presentViewController_animated_completion_(picker_object, True, None)
+        print("Removing valid picker_object V2")
+        # vc.presentViewController_animated_completion_(True, True, None)
 
         # load_framework('/System/Library/Frameworks/Photos.framework')
         #print("loaded Photolib framework..")
