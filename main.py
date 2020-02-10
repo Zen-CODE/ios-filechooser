@@ -34,7 +34,6 @@ class MainApp(App):
             "UIImagePickerController",
             load_class_methods=[b'alloc'],
             load_instance_methods=[b'init', b'setSourceType_'])
-        print("Created UIImagePickerController..")
 
         picker_object = picker.alloc().init()
         print(f"picker_object = {picker_object}")
@@ -50,18 +49,12 @@ class MainApp(App):
 
         UIApplication = autoclass('UIApplication')
         vc = UIApplication.sharedApplication().keyWindow.rootViewController()
-
-        print(f"vc alloced and inited = {vc}")
-        # print(f"vc has {dir(vc)}")
+        print(f"vc = {vc}")
 
         # vc.presentViewController_animated_completion_(picker, objc_b(True), objc_b(True))
         # vc.presentViewController_animated_completion_(picker, True, ObjcVoid(None))
         vc.presentViewController_animated_completion_(picker_object, True, None)
-        print("Removing valid picker_object V2")
-        # vc.presentViewController_animated_completion_(True, True, None)
-
-        # load_framework('/System/Library/Frameworks/Photos.framework')
-        #print("loaded Photolib framework..")
+        print("Called vc.presentViewController_animated_completion_")
 
     @protocol('UIImagePickerControllerDelegate')
     def imagePickerController_didFinishPickingMediaWithInfo_(self, *args):
