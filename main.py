@@ -33,12 +33,11 @@ class MainApp(App):
     def pick_image(self):
         # if platform == 'ios':
         #     print("Callign objective C picker")
-        #     self.native_image_picker.callback = lambda: self.callback()
+        #     self.native_image_picker.callback = self.callback
         #     self.native_image_picker.displayImagePicker()
         #     return
 
-        picker = autoclass("UIImagePickerController",
-                           copy_properties=False)
+        picker = autoclass("UIImagePickerController")
         picker_object = picker.alloc().init()
 
         picker_object.sourceType = 0 
@@ -54,9 +53,6 @@ class MainApp(App):
     def imagePickerController_didFinishPickingMediaWithInfo_(self, *args):
         print("UIImagePickerControllerDelegate called")
 
-    # @protocol("didFinishPickingMediaWithInfo")
-    # def arb_name(self, *args):
-    #     pass
 
 
 
