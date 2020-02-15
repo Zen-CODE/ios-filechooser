@@ -11,13 +11,7 @@ from pyobjus.dylib_manager import load_framework
 load_framework('/System/Library/Frameworks/Photos.framework')
 
 class MainApp(App):
-    native_image_picker = ObjectProperty(None)
-    image_path = StringProperty("")
-
-    def on_start(self):
-        if platform == 'ios':
-            self.native_image_picker = autoclass("NativeImagePicker").alloc().init()
-        pass
+    picker = None
 
     def update(self):
         print("Updating image...")
@@ -27,31 +21,28 @@ class MainApp(App):
         image = Image(source=image_path, nocache=True)
         self.root.add_widget(image)
 
-    def callback(self):
-        print("Callback fired!!!! ")
+    def _get_picker(self):
+        """
+        Return an instantiated and configured UIImagePickerController.
+        """
+        picker = autoclass("UIImagePickerController")
+        po = picker.alloc().init()
+        po.sourceType = 0 
+        po.delegate = self
+        return po
 
     def pick_image(self):
-        # if platform == 'ios':
-        #     print("Callign objective C picker")
-        #     self.native_image_picker.callback = self.callback
-        #     self.native_image_picker.displayImagePicker()
-        #     return
-
-        picker = autoclass("UIImagePickerController")
-        picker_object = picker.alloc().init()
-
-        picker_object.sourceType = 0 
-        picker_object.delegate = self
-
+        self.picker = self._get_picker()
         UIApplication = autoclass('UIApplication')
         vc = UIApplication.sharedApplication().keyWindow.rootViewController()
 
-        vc.presentViewController_animated_completion_(picker_object, True, None)
+        vc.presentViewController_animated_completion_(self.picker, True, None)
         print("Called vc.presentViewController_animated_completion_")
 
     @protocol('UIImagePickerControllerDelegate')
-    def imagePickerController_didFinishPickingMediaWithInfo_(self, *args):
-        print("UIImagePickerControllerDelegate called")
+    def imagePickerController_didFinishPickingMediaWithInfo_(
+            self, image_picker, frozen_dict):
+        print(f"UIImagePickerControllerDelegate called: {frozen_dict}")
 
 
 
