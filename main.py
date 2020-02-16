@@ -27,11 +27,16 @@ class MainApp(App):
         """
         picker = autoclass("UIImagePickerController")
         po = picker.alloc().init()
-        po.sourceType = 0 
+        po.sourceType = 0
         po.delegate = self
         return po
 
     def pick_image(self):
+        """
+        Launch the native iOS file browser. Upon selection, the
+        `imagePickerController_didFinishPickingMediaWithInfo_` delegate is
+        called where we close the file browser and handle the result.
+        """
         self.picker = self._get_picker()
         UIApplication = autoclass('UIApplication')
         vc = UIApplication.sharedApplication().keyWindow.rootViewController()
@@ -42,9 +47,46 @@ class MainApp(App):
     @protocol('UIImagePickerControllerDelegate')
     def imagePickerController_didFinishPickingMediaWithInfo_(
             self, image_picker, frozen_dict):
-        print(f"UIImagePickerControllerDelegate called: {frozen_dict}")
+        """
+        Delegate which handles the result of the image seletion process.
+        """
+        image_picker.dismissViewControllerAnimated_completion_(True, None)
 
+        all_keys = frozen_dict.allKeys()  # NSArrayI
+        # object at 0 = UIImagePickerControllerMediaType
+        # object at 1 = UIImagePickerControllerOriginalImage
+        # object at 2 = UIImagePickerControllerReferenceURL
+        # object at 3 = UIImagePickerControllerImageURL
+        # object at 4 = UIImagePickerControllerPHAsset
+        # print(f"all_keys = {all_keys}")
+        # try:
+        #     k = 0
+        #     while True:
+        #         obj = all_keys.objectAtIndex_(k)
+        #         print(f"object at {k} = {obj.UTF8String()}")
+        #         k += 1
+        # except Exception as _e:
+        #     pass
 
+        # print(all_keys.size())
 
+        NSString = autoclass('NSString')
+        string_key = NSString.stringWithUTF8String_(
+            "UIImagePickerControllerImageURL")
+        obj = frozen_dict.objectForKey_(string_key)
+        print(f"Got UIImage {obj}")  # <__main__.NSURL object at 0x1229c31a8>
+
+        # # we can iterate over dict values
+        # enumerator = frozen_dict.objectEnumerator()
+        # obj = enumerator.nextObject()
+        # while obj:
+        #     str_value = obj.pngData()
+        #     print("Value: " + str_value)
+        #     obj = enumerator.nextObject()
+
+        # NSString = autoclass('NSString')
+        # string_key = NSString.stringWithUTF8String_("imageURL")
+        # ret = frozen_dict.objectForKey_(string_key)
+        # print(f"ret = {ret}")
 
 MainApp().run()
