@@ -51,6 +51,10 @@
 }
 
 - (NSString*) writeToPNG: (NSDictionary *) info fileName: (NSString*) file_name {
+
+    NSString *image_name = [self getFileName: info[UIImagePickerControllerImageURL]];
+    NSLog(@"NSString image_name is %@", image_name);
+
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     NSData *imageData = UIImagePNGRepresentation(image);
 
@@ -76,9 +80,7 @@
     // NSString *image_name = ns_url.pathComponents.lastObject;
     // NSArray *listItems = [image_name componentsSeparatedByString:@"."];
     // image_name = listItems[0];
-    NSString *image_name = [self getFileName: info[UIImagePickerControllerImageURL]];
-    NSLog(@"the NSUrl file is %@", image_name);
-    NSString *png_path = [self writeToPNG:info fileName: @"cover"];
+    NSString *png_path = [self writeToPNG:info fileName: @"cached"];
     NSLog(@"Final image is %@", png_path);
 
     [picker dismissViewControllerAnimated:YES completion:nil];//{
