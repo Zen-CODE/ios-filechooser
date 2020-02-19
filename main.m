@@ -45,25 +45,19 @@
     return ret;
 }
 
-- (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    // Save the image as "cached.png" in a folder accessible by the app (user_data_dir in python/kivy)
-    // NSURL *ns_url = info[UIImagePickerControllerImageURL];
-    // NSString *image_name = ns_url.pathComponents.lastObject;
-    // NSArray *listItems = [image_name componentsSeparatedByString:@"."];
-    // image_name = listItems[0];
-    NSString *image_name = [self getFileName: info[UIImagePickerControllerImageURL]];
+- (NSString*) getPNGFile {
+    NSString* test = @"My NSString";
+    return test;
+}
 
-    NSLog(@"the NSUrl file is %@", image_name);
-
-
+- (NSString*) writeToPNG: (NSDictionary *) info fileName: (NSString*) file_name {
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     NSData *imageData = UIImagePNGRepresentation(image);
 
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
 
-    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png",@"cached"]];
-
+    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", file_name]];
     NSLog(@"pre writing to file");
     if (![imageData writeToFile:imagePath atomically:NO])
     {
@@ -73,6 +67,20 @@
     {
         NSLog(@"the cachedImagedPath is %@",imagePath);
     }
+    return imagePath;
+}
+
+- (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    // Save the image as "cached.png" in a folder accessible by the app (user_data_dir in python/kivy)
+    // NSURL *ns_url = info[UIImagePickerControllerImageURL];
+    // NSString *image_name = ns_url.pathComponents.lastObject;
+    // NSArray *listItems = [image_name componentsSeparatedByString:@"."];
+    // image_name = listItems[0];
+    NSString *image_name = [self getFileName: info[UIImagePickerControllerImageURL]];
+    NSLog(@"the NSUrl file is %@", image_name);
+    NSString *png_path = [self writeToPNG:info fileName: @"cover"];
+    NSLog(@"Final image is %@", png_path);
+
     [picker dismissViewControllerAnimated:YES completion:nil];//{
     // <#code#>
     //}];
