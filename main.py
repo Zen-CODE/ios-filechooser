@@ -44,6 +44,15 @@ class MainApp(App):
         vc.presentViewController_animated_completion_(self.picker, True, None)
         print("Called vc.presentViewController_animated_completion_")
 
+    @staticmethod
+    def get_ffd(fdict, key):
+        """ Retrieve the obejct with the specified key from the frozen dict.
+        """
+        NSString = autoclass('NSString')
+        string_key = NSString.stringWithUTF8String_(key)
+        return fdict.objectForKey_(string_key)
+
+
     @protocol('UIImagePickerControllerDelegate')
     def imagePickerController_didFinishPickingMediaWithInfo_(
             self, image_picker, frozen_dict):
@@ -52,13 +61,14 @@ class MainApp(App):
         """
         image_picker.dismissViewControllerAnimated_completion_(True, None)
 
-        all_keys = frozen_dict.allKeys()  # NSArrayI
+        # all_keys = frozen_dict.allKeys()  # NSArrayI
         # object at 0 = UIImagePickerControllerMediaType
         # object at 1 = UIImagePickerControllerOriginalImage
         # object at 2 = UIImagePickerControllerReferenceURL
         # object at 3 = UIImagePickerControllerImageURL
         # object at 4 = UIImagePickerControllerPHAsset
         # print(f"all_keys = {all_keys}")
+
         # try:
         #     k = 0
         #     while True:
@@ -70,11 +80,8 @@ class MainApp(App):
 
         # print(all_keys.size())
 
-        NSString = autoclass('NSString')
-        string_key = NSString.stringWithUTF8String_(
-            "UIImagePickerControllerImageURL")
-        obj = frozen_dict.objectForKey_(string_key)
-        print(f"Got UIImage {obj}")  # <__main__.NSURL object at 0x1229c31a8>
+        obj = self.get_ffd(frozen_dict, "UIImagePickerControllerImageURL")
+        print(f"Got NSURL {obj}")  # <__main__.NSURL object at 0x1229c31a8>
 
         # # we can iterate over dict values
         # enumerator = frozen_dict.objectEnumerator()
