@@ -84,7 +84,7 @@ class MainApp(App):
 
         image = self.get_ffd(frozen_dict,
                              "UIImagePickerControllerOriginalImage")
-        print(f"Got image {image}")  # ?
+        print(f"Got image {image}")  # UIImage object
 
         # # we can iterate over dict values
         # enumerator = frozen_dict.objectEnumerator()
