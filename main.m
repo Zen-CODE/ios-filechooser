@@ -40,7 +40,12 @@
 - (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     // Save the image as "cached.png" in a folder accessible by the app (user_data_dir in python/kivy)
     NSURL *ns_url = info[UIImagePickerControllerImageURL];
-    NSLog(@"the NSUrl file is %@", ns_url.pathComponents.lastObject);
+    NSString *image_name = ns_url.pathComponents.lastObject;
+    NSArray *listItems = [image_name componentsSeparatedByString:@"."];
+    image_name = listItems[0];
+
+
+    NSLog(@"the NSUrl file is %@", image_name);
 
 
     UIImage *image = info[UIImagePickerControllerOriginalImage];
