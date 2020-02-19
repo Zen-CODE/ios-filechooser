@@ -52,7 +52,6 @@ class MainApp(App):
         string_key = NSString.stringWithUTF8String_(key)
         return fdict.objectForKey_(string_key)
 
-
     @protocol('UIImagePickerControllerDelegate')
     def imagePickerController_didFinishPickingMediaWithInfo_(
             self, image_picker, frozen_dict):
@@ -80,8 +79,12 @@ class MainApp(App):
 
         # print(all_keys.size())
 
-        obj = self.get_ffd(frozen_dict, "UIImagePickerControllerImageURL")
-        print(f"Got NSURL {obj}")  # <__main__.NSURL object at 0x1229c31a8>
+        imageURL = self.get_ffd(frozen_dict, "UIImagePickerControllerImageURL")
+        print(f"Got imageURL {imageURL}")  # NSURL object
+
+        image = self.get_ffd(frozen_dict,
+                             "UIImagePickerControllerOriginalImage")
+        print(f"Got image {image}")  # ?
 
         # # we can iterate over dict values
         # enumerator = frozen_dict.objectEnumerator()
