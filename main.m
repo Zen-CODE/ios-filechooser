@@ -37,13 +37,21 @@
     return 0;
 }
 
-- (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    // Save the image as "cached.png" in a folder accessible by the app (user_data_dir in python/kivy)
-    NSURL *ns_url = info[UIImagePickerControllerImageURL];
+- (NSString*) getFileName:(NSURL *) ns_url {
+    // Return the file name without the path or file extention
     NSString *image_name = ns_url.pathComponents.lastObject;
     NSArray *listItems = [image_name componentsSeparatedByString:@"."];
-    image_name = listItems[0];
+    NSString *ret = listItems[0];
+    return ret;
+}
 
+- (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    // Save the image as "cached.png" in a folder accessible by the app (user_data_dir in python/kivy)
+    // NSURL *ns_url = info[UIImagePickerControllerImageURL];
+    // NSString *image_name = ns_url.pathComponents.lastObject;
+    // NSArray *listItems = [image_name componentsSeparatedByString:@"."];
+    // image_name = listItems[0];
+    NSString *image_name = [self getFileName: info[UIImagePickerControllerImageURL]];
 
     NSLog(@"the NSUrl file is %@", image_name);
 
