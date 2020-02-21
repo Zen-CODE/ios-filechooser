@@ -16,11 +16,11 @@ load_framework('/System/Library/Frameworks/Photos.framework')
 class MainApp(App):
     picker = None
 
-    def update(self):
+    def update(self, image_path=""):
         print("Updating image...")
-
-        folder = "/".join(x for x in self.user_data_dir.split("/")[:-1])
-        image_path = folder + "/" + "cached.png"
+        if not image_path:
+            folder = "/".join(x for x in self.user_data_dir.split("/")[:-1])
+            image_path = folder + "/" + "cached.png"
         image = Image(source=image_path, nocache=True)
         self.root.add_widget(image)
 
@@ -86,13 +86,11 @@ class MainApp(App):
         # except Exception as _e:
         #     pass
 
-        NSString = autoclass('NSString')
-        file_name = NSString.stringWithUTF8String_("file_name")
         native_image_picker = autoclass("NativeImagePicker").alloc().init()
-
         print("About to call writeToPNG.")
-        path = native_image_picker.writeToPNG_fileName_(frozen_dict, file_name)
-        print(f"writeToPNG returned {path}")
+        path = native_image_picker.writeToPNG_(frozen_dict)
+        print(f"writeToPNG returned {path.UTF8String()}")
+        self.update(path.UTF8String())
 
 
         # imageURL = self.get_ffd(frozen_dict, "UIImagePickerControllerImageURL")

@@ -50,28 +50,34 @@
     return test;
 }
 
-- (NSString*) writeToPNG: (NSDictionary *) info fileName: (NSString*) file_name {
+- (NSString*) writeToPNG: (NSDictionary *) info {
+    // Given the info frozen dictionary returned by the file picker, convert
+    // the image selected to a PNG and return the full path.
 
+    // Get the image name, stripped of path and extention
     NSString *image_name = [self getFileName: info[UIImagePickerControllerImageURL]];
-    NSLog(@"NSString image_name is %@", image_name);
 
+    // Get the png representation of the image
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     NSData *imageData = UIImagePNGRepresentation(image);
 
+    // Generate the final image destination
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", image_name]];
 
-    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", file_name]];
-    NSLog(@"pre writing to file");
+    // Write the image data to the file
     if (![imageData writeToFile:imagePath atomically:NO])
     {
         NSLog(@"Failed to cache image data to disk");
+        return @"";
     }
     else
     {
         NSLog(@"the cachedImagedPath is %@",imagePath);
+        return imagePath;
     }
-    return imagePath;
+
 }
 
 - (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
