@@ -9,8 +9,8 @@ load_framework('/System/Library/Frameworks/Photos.framework')
 class MainApp(App):
 
     def add_image(self, image_path):
-        image = Image(source=image_path, nocache=True)
-        self.root.add_widget(image)
+        """ Add an image to the UI given the sepecified `image_path`. """
+        self.root.add_widget(Image(source=image_path, nocache=True))
 
     def _get_picker(self):
         """
@@ -41,9 +41,12 @@ class MainApp(App):
         """
         image_picker.dismissViewControllerAnimated_completion_(True, None)
 
+        # Note: We need to call this Objective C class as there is currently
+        #       no way to call a non-class function via pyobjus. And here,
+        #       we have to use the `UIImagePNGRepresentation` to get the png
+        #       representation.
         native_image_picker = autoclass("NativeImagePicker").alloc().init()
         path = native_image_picker.writeToPNG_(frozen_dict)
-        print(f"writeToPNG returned {path.UTF8String()}")
         self.add_image(path.UTF8String())
 
 
