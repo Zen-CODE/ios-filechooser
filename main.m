@@ -2,11 +2,6 @@
 @end
 @implementation NativeImagePicker
 
--(id)init {
-    NSLog(@"initializing NativeImagePicker");
-    return self;
-}
-
 - (NSString*) getFileName:(NSURL *) ns_url {
     // Return the file name without the path or file extention
     NSString *image_name = ns_url.pathComponents.lastObject;
