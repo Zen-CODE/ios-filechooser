@@ -9,18 +9,11 @@ from kivy.properties import ObjectProperty, StringProperty
 from pyobjus.dylib_manager import load_framework, INCLUDE
 
 load_framework('/System/Library/Frameworks/Photos.framework')
-# load_framework('/System/Library/Frameworks/UIKit.framework')
-#  load_framework(INCLUDE.UIKit)
 
 
 class MainApp(App):
-    picker = None
 
-    def update(self, image_path=""):
-        print("Updating image...")
-        if not image_path:
-            folder = "/".join(x for x in self.user_data_dir.split("/")[:-1])
-            image_path = folder + "/" + "cached.png"
+    def add_image(self, image_path):
         image = Image(source=image_path, nocache=True)
         self.root.add_widget(image)
 
@@ -40,22 +33,14 @@ class MainApp(App):
         `imagePickerController_didFinishPickingMediaWithInfo_` delegate is
         called where we close the file browser and handle the result.
         """
-        # native_image_picker = autoclass("NativeImagePicker").alloc().init()
-        # native_image_picker.displayImagePicker()
-        # val = native_image_picker.getPNGFile().UTF8String()
-        # print(f"Got NativeImagePicker {val}")
-        # return
-
-        self.picker = self._get_picker()
+        picker = self._get_picker()
         UIApplication = autoclass('UIApplication')
         vc = UIApplication.sharedApplication().keyWindow.rootViewController()
-
-        vc.presentViewController_animated_completion_(self.picker, True, None)
-        print("Called vc.presentViewController_animated_completion_")
+        vc.presentViewController_animated_completion_(picker, True, None)
 
     @staticmethod
     def get_ffd(fdict, key):
-        """ Retrieve the obejct with the specified key from the frozen dict.
+        """ Retrieve the object with the specified key from the frozen dict.
         """
         NSString = autoclass('NSString')
         string_key = NSString.stringWithUTF8String_(key)
@@ -87,10 +72,9 @@ class MainApp(App):
         #     pass
 
         native_image_picker = autoclass("NativeImagePicker").alloc().init()
-        print("About to call writeToPNG.")
         path = native_image_picker.writeToPNG_(frozen_dict)
         print(f"writeToPNG returned {path.UTF8String()}")
-        self.update(path.UTF8String())
+        self.add_image(path.UTF8String())
 
 
         # imageURL = self.get_ffd(frozen_dict, "UIImagePickerControllerImageURL")
