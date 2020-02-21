@@ -6,9 +6,12 @@ if platform == 'ios':
     from pyobjus import autoclass, protocol, ObjcVoid, objc_i
 from kivy.uix.image import Image
 from kivy.properties import ObjectProperty, StringProperty
-from pyobjus.dylib_manager import load_framework
+from pyobjus.dylib_manager import load_framework, INCLUDE
 
 load_framework('/System/Library/Frameworks/Photos.framework')
+# load_framework('/System/Library/Frameworks/UIKit.framework')
+#  load_framework(INCLUDE.UIKit)
+
 
 class MainApp(App):
     picker = None
@@ -37,6 +40,12 @@ class MainApp(App):
         `imagePickerController_didFinishPickingMediaWithInfo_` delegate is
         called where we close the file browser and handle the result.
         """
+        # native_image_picker = autoclass("NativeImagePicker").alloc().init()
+        # native_image_picker.displayImagePicker()
+        # val = native_image_picker.getPNGFile().UTF8String()
+        # print(f"Got NativeImagePicker {val}")
+        # return
+
         self.picker = self._get_picker()
         UIApplication = autoclass('UIApplication')
         vc = UIApplication.sharedApplication().keyWindow.rootViewController()
@@ -77,14 +86,21 @@ class MainApp(App):
         # except Exception as _e:
         #     pass
 
-        # print(all_keys.size())
+        NSString = autoclass('NSString')
+        file_name = NSString.stringWithUTF8String_("file_name")
+        native_image_picker = autoclass("NativeImagePicker").alloc().init()
 
-        imageURL = self.get_ffd(frozen_dict, "UIImagePickerControllerImageURL")
-        print(f"Got imageURL {imageURL}")  # NSURL object
+        print("About to call writeToPNG.")
+        path = native_image_picker.writeToPNG_fileName_(frozen_dict, file_name)
+        print(f"writeToPNG returned {path}")
 
-        image = self.get_ffd(frozen_dict,
-                             "UIImagePickerControllerOriginalImage")
-        print(f"Got image {image}")  # UIImage object
+
+        # imageURL = self.get_ffd(frozen_dict, "UIImagePickerControllerImageURL")
+        # print(f"Got imageURL {imageURL}")  # NSURL object
+
+        # image = self.get_ffd(frozen_dict,
+        #                      "UIImagePickerControllerOriginalImage")
+        # print(f"Got image {image}")  # UIImage object
 
         # # we can iterate over dict values
         # enumerator = frozen_dict.objectEnumerator()
@@ -98,5 +114,6 @@ class MainApp(App):
         # string_key = NSString.stringWithUTF8String_("imageURL")
         # ret = frozen_dict.objectForKey_(string_key)
         # print(f"ret = {ret}")
+
 
 MainApp().run()
