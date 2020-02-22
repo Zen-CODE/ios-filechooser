@@ -21,4 +21,8 @@ class IOSFileChooser(FileChooser):
         super(IOSFileChooser, self).__init__(*args, **kwargs)
 
     def _file_selection_dialog(self, **kwargs):
+        """
+        Function called when action is required, A "mode" parameter specifies
+        which and is one of "open", "save" or "dir".
+        """
         pass
