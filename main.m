@@ -11,8 +11,8 @@
 }
 
 - (NSString*) writeToPNG: (NSDictionary *) info {
-    // Given the info frozen dictionary returned by the file picker, convert
-    // the image selected to a PNG and return the full path.
+    /* Given the info frozen dictionary returned by the file picker, convert
+     the image selected to a PNG and return the full path. */
 
     // Get the image name, stripped of path and extention
     NSString *image_name = [self getFileName: info[UIImagePickerControllerImageURL]];
