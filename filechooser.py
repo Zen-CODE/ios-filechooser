@@ -71,3 +71,7 @@ class IOSFileChooser(FileChooser):
         native_image_picker = autoclass("NativeImagePicker").alloc().init()
         path = native_image_picker.writeToPNG_(frozen_dict)
         self._on_selection([path.UTF8String()])
+
+
+def instance():
+    return IOSFileChooser()
